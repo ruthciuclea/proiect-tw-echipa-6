@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professor - Quizzes</title>
-    <link rel="stylesheet" href="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/style/styles.css">
+    <link rel="stylesheet" href="../style/styles.css">
 </head>
 <body>
     <div class="app-container">
@@ -17,7 +17,7 @@
                 <a href="professor_classes.html" class="nav-item">
                     <span class="nav-icon">🏫</span> <span>Classes</span>
                 </a>
-                <a href="index.html" class="nav-item">
+                <a href="#" onclick="logout()" class="nav-item">
                     <span class="nav-icon">🚪</span> <span>Logout</span>
                 </a>
             </div>
@@ -39,10 +39,25 @@
         </main>
     </div>
 
-    <script src="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/js/script.js"></script>
+    <script src="../js/script.js"></script>
     <script>
-        // Load data on page open
-        renderQuizList('quiz-list-container');
+        // Custom renderer for this page to include the SCAN button
+        function renderProfessorQuizzes() {
+            const container = document.getElementById('quiz-list-container');
+            const quizzes = getQuizzes();
+            container.innerHTML = quizzes.map(q => `
+                <div class="list-item" style="flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        <strong>${q.name}</strong>
+                        <div class="text-small">Papers: ${q.papers} | ${q.date}</div>
+                    </div>
+                    <button class="secondary-btn" style="padding: 5px 10px; font-size: 12px;" onclick="window.location.href='scan_quiz.html'">
+                        📷 Scan
+                    </button>
+                </div>
+            `).join('');
+        }
+        renderProfessorQuizzes();
     </script>
 </body>
 </html>

@@ -155,6 +155,22 @@ function renderProfessorStudentList(containerId) {
         </div>
     `).join('');
 }
+function handleScan(input) {
+    if (input.files && input.files[0]) {
+        // 1. Hide the upload text
+        document.getElementById('uploadText').innerText = "Image Uploaded: " + input.files[0].name;
+        
+        // 2. Show Processing Spinner
+        document.getElementById('processing').style.display = 'block';
+        document.getElementById('scanResult').style.display = 'none';
+
+        // 3. Simulate API Delay (2 seconds)
+        setTimeout(() => {
+            document.getElementById('processing').style.display = 'none';
+            document.getElementById('scanResult').style.display = 'block';
+        }, 2000);
+    }
+}
 /* --- AUTHENTICATION LOGIC --- */
 
 function handleRegister() {
