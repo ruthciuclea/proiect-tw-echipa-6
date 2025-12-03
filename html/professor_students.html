@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor - Students</title>
+    <link rel="stylesheet" href="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/style/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="nav-bar">
+            <span class="nav-header">Teacher Portal</span>
+            <div class="nav-links">
+                <a href="professor_quizzes.html" class="nav-item">
+                    <span class="nav-icon">📝</span> <span>Quizzes</span>
+                </a>
+                <a href="professor_classes.html" class="nav-item">
+                    <span class="nav-icon">🏫</span> <span>Classes</span>
+                </a>
+                <a href="professor_students.html" class="nav-item active">
+                    <span class="nav-icon">🎓</span> <span>Students</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🚪</span> <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="mobile-header">Students</div>
+
+            <div class="card" style="background:transparent; box-shadow:none; padding:0;">
+                <input type="text" id="searchStudent" placeholder="Search student name or ID... 🔍" onkeyup="filterStudents()">
+            </div>
+
+            <div class="card">
+                <h3>Enrolled Students</h3>
+                <div id="students-list-container">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/js/script.js"></script>
+    <script>
+        renderProfessorStudentList('students-list-container');
+
+        function filterStudents() {
+            const input = document.getElementById('searchStudent').value.toLowerCase();
+            const items = document.querySelectorAll('.student-item');
+            
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                item.style.display = text.includes(input) ? 'flex' : 'none';
+            });
+        }
+    </script>
+</body>
+</html>

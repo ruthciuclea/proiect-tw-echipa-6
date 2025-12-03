@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor - Quizzes</title>
+    <link rel="stylesheet" href="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/style/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="nav-bar">
+            <span class="nav-header">Teacher Portal</span>
+            <div class="nav-links">
+                <a href="professor_quizzes.html" class="nav-item active">
+                    <span class="nav-icon">📝</span> <span>Quizzes</span>
+                </a>
+                <a href="professor_classes.html" class="nav-item">
+                    <span class="nav-icon">🏫</span> <span>Classes</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🚪</span> <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="mobile-header">Quizzes</div>
+            
+            <div class="card" style="background:transparent; box-shadow:none; padding:0;">
+                <input type="text" id="search" placeholder="Search by class, student etc. 🔍">
+            </div>
+
+            <div id="quiz-list-container">
+                </div>
+
+            <button class="primary-btn" onclick="window.location.href='create_quiz.html'" style="margin-top: 20px;">
+                CREATE NEW QUIZ
+            </button>
+        </main>
+    </div>
+
+    <script src="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/js/script.js"></script>
+    <script>
+        // Load data on page open
+        renderQuizList('quiz-list-container');
+    </script>
+</body>
+</html>

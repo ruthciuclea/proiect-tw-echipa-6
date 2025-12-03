@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="stylesheet" href="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/style/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="nav-bar">
+            <span class="nav-header">Student Portal</span>
+            <div class="nav-links">
+                <a href="student_dashboard.html" class="nav-item active">
+                    <span class="nav-icon">🏫</span> <span>My Classes</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="nav-icon">📊</span> <span>Stats</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🚪</span> <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="mobile-header">My Dashboard</div>
+
+            <div class="card">
+                <h3>Join a Class</h3>
+                <div class="flex-row">
+                    <input type="text" id="joinCode" placeholder="Enter Class Code (e.g. adb567)" style="margin:0;">
+                    <button class="primary-btn" style="width: auto;" onclick="handleJoin()">JOIN</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Enrolled Subjects</h3>
+                <div id="student-classes-container"></div>
+            </div>
+
+            <div class="card" style="background-color: #d1eaed; border-left: 5px solid #2a8b85;">
+                <h3>📈 Performance</h3>
+                <p>You've increased your performance by 55% this semester!</p>
+            </div>
+        </main>
+    </div>
+
+    <script src="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/js/script.js"></script>
+    <script>
+        renderStudentClasses('student-classes-container');
+
+        function handleJoin() {
+            const code = document.getElementById('joinCode').value.trim();
+            if(!code) return;
+
+            const result = joinClass(code);
+            if(result.success) {
+                alert('Successfully joined ' + result.className + '!');
+                renderStudentClasses('student-classes-container');
+                document.getElementById('joinCode').value = '';
+            } else {
+                alert(result.message);
+            }
+        }
+    </script>
+</body>
+</html>

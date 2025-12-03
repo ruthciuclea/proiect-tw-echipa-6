@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor - Classes</title>
+    <link rel="stylesheet" href="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/style/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="nav-bar">
+            <span class="nav-header">Teacher Portal</span>
+            <div class="nav-links">
+                <a href="professor_quizzes.html" class="nav-item">
+                    <span class="nav-icon">📝</span> <span>Quizzes</span>
+                </a>
+                <a href="professor_classes.html" class="nav-item active">
+                    <span class="nav-icon">🏫</span> <span>Classes</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🚪</span> <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="mobile-header">Classes</div>
+
+            <div class="card">
+                <h3>Your Classes</h3>
+                <div id="class-list-container"></div>
+            </div>
+
+            <div class="card" style="border-top: 4px solid #4ecdc4;">
+                <h3>Create New Class</h3>
+                <input type="text" id="className" placeholder="Class Name (e.g. 2nd Year)">
+                
+                <label>Subjects (comma separated)</label>
+                <input type="text" id="classSubjects" placeholder="ASD, TW, P2">
+
+                <button class="primary-btn" onclick="handleCreateClass()">GENERATE CLASS & CODE</button>
+            </div>
+        </main>
+    </div>
+
+    <script src="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/js/script.js"></script>
+    <script>
+        renderClassList('class-list-container');
+
+        function handleCreateClass() {
+            const name = document.getElementById('className').value;
+            const subjectsStr = document.getElementById('classSubjects').value;
+            
+            if(!name || !subjectsStr) { alert('Fill all fields'); return; }
+            
+            const subjects = subjectsStr.split(',').map(s => s.trim());
+            const code = createClass(name, subjects);
+            
+            alert('Class Created! Access Code: ' + code);
+            renderClassList('class-list-container');
+            
+            // Clear inputs
+            document.getElementById('className').value = '';
+            document.getElementById('classSubjects').value = '';
+        }
+    </script>
+</body>
+</html>

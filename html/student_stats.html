@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Statistics</title>
+    <link rel="stylesheet" href="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/style/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="nav-bar">
+            <span class="nav-header">Student Portal</span>
+            <div class="nav-links">
+                <a href="student_dashboard.html" class="nav-item">
+                    <span class="nav-icon">🏫</span> <span>My Classes</span>
+                </a>
+                <a href="student_stats.html" class="nav-item active">
+                    <span class="nav-icon">📊</span> <span>Stats</span>
+                </a>
+                <a href="index.html" class="nav-item">
+                    <span class="nav-icon">🚪</span> <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            <div class="mobile-header">My Statistics</div>
+
+            <div class="card" style="text-align: center;">
+                <h3>Overall Performance</h3>
+                <p style="color: #666; font-size: 14px; margin-bottom: 10px;">
+                    Average across all subjects
+                </p>
+                
+                <div class="progress-circle" style="--progress: 75%;">
+                    <span class="progress-value">75%</span>
+                </div>
+
+                <div style="background-color: #d1eaed; padding: 10px; border-radius: 5px; color: #2a8b85; margin-top: 10px;">
+                    📈 <strong>Great job!</strong> You've increased your performance by 15% since last month.
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Recent Test Results</h3>
+                <div id="stats-list-container">
+                    </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/js/script.js"></script>
+    <script>
+        // Render stats on load
+        renderStudentStats('stats-list-container');
+    </script>
+</body>
+</html>
