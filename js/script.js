@@ -155,7 +155,68 @@ function renderProfessorStudentList(containerId) {
         </div>
     `).join('');
 }
+/* --- AUTHENTICATION LOGIC --- */
 
+function handleRegister() {
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const pass = document.getElementById('regPass').value;
+    const role = document.getElementById('regRole').value;
+
+    if (!name || !email || !pass) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    // Get existing users or initialize empty array
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+
+    // Check if email already exists
+    if (users.find(u => u.email === email)) {
+        alert("User already exists!");
+        return;
+    }
+
+    // Save new user
+    users.push({ name, email, pass, role });
+    localStorage.setItem('users', JSON.stringify(users));
+
+    alert("Registration successful! Please login.");
+    window.location.href = 'login.html';
+}
+
+function handleLogin() {
+    const email = document.getElementById('loginEmail').value;
+    const pass = document.getElementById('loginPass').value;
+
+    if (!email || !pass) {
+        alert("Please enter email and password.");
+        return;
+    }
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.email === email && u.pass === pass);
+
+    if (user) {
+        // Save current user session
+        localStorage.setItem('currentUser', JSON.stringify(user));
+
+        // Redirect based on role
+        if (user.role === 'student') {
+            window.location.href = 'student_dashboard.html';
+        } else {
+            window.location.href = 'professor_quizzes.html';
+        }
+    } else {
+        alert("Invalid email or password!");
+    }
+}
+
+// Optional: Logout function to be used in nav bars
+function logout() {
+    localStorage.removeItem('currentUser');
+    window.location.href = 'index.html';
+}
 // NEW: Render Student's Own Stats
 function renderStudentStats(containerId) {
     const container = document.getElementById(containerId);

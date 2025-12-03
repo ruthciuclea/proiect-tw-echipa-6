@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Quiz App</title>
+    <link rel="stylesheet" href="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/style/styles.css">
+</head>
+<body>
+    <div class="app-container" style="justify-content: center; align-items: center; background-color: #fdf6e3;">
+        <div class="card" style="width: 100%; max-width: 400px; text-align: center;">
+            <h2 style="color: #4ecdc4; margin-bottom: 20px;">Create Account</h2>
+            
+            <input type="text" id="regName" placeholder="Full Name">
+            <input type="email" id="regEmail" placeholder="Email Address">
+            <input type="password" id="regPass" placeholder="Password">
+            
+            <label style="text-align: left; display: block; margin-top: 10px; font-size: 14px; color: #666;">I am a:</label>
+            <select id="regRole">
+                <option value="student">Student</option>
+                <option value="professor">Professor</option>
+            </select>
+
+            <button class="primary-btn" onclick="handleRegister()">REGISTER</button>
+            
+            <p style="margin-top: 15px; font-size: 14px;">
+                Already have an account? <a href="login.html" style="color: #4ecdc4;">Login here</a>
+            </p>
+        </div>
+    </div>
+    <script src="/Users/ruthciuclea/proiecttw/proiect-tw-echipa-6/js/script.js"></script>
+</body>
+</html>
