@@ -1,4 +1,3 @@
-/* --- DATA INITIALIZATION --- */
 if (!localStorage.getItem('quizzes')) {
     const initialQuizzes = [
         { id: 1, name: 'Test 1 - ASD', papers: 14, date: '2025-10-28' },
@@ -18,7 +17,7 @@ if (!localStorage.getItem('studentClasses')) {
     localStorage.setItem('studentClasses', JSON.stringify([]));
 }
 
-// NEW: Mock Data for Students (Professor View)
+
 const mockStudents = [
     { name: 'Marian Petreanu', id: '67895', avg: 85, status: 'Good' },
     { name: 'Alexandra Dobrescu', id: '67896', avg: 92, status: 'Excellent' },
@@ -26,15 +25,15 @@ const mockStudents = [
     { name: 'Maria Ionescu', id: '67898', avg: 70, status: 'Good' }
 ];
 
-// NEW: Mock Data for Student Grades (Student View)
+
 const mockMyGrades = [
     { subject: 'ASD', test: 'Midterm Exam', score: 90, total: 100 },
     { subject: 'P2', test: 'Lab Quiz 1', score: 7, total: 10 },
     { subject: 'ASD', test: 'Final Project', score: 85, total: 100 },
-    { subject: 'TW', test: 'CSS Grid Test', score: 45, total: 100 } // Low score example
+    { subject: 'TW', test: 'CSS Grid Test', score: 45, total: 100 } 
 ];
 
-/* --- FUNCTIONS --- */
+
 
 function getQuizzes() { return JSON.parse(localStorage.getItem('quizzes')); }
 function getClasses() { return JSON.parse(localStorage.getItem('classes')); }
@@ -80,7 +79,6 @@ function joinClass(code) {
     return { success: false, message: 'Invalid Code' };
 }
 
-/* --- RENDERERS --- */
 
 function renderQuizList(containerId) {
     const container = document.getElementById(containerId);
@@ -134,7 +132,7 @@ function renderStudentClasses(containerId) {
     `).join('');
 }
 
-// NEW: Render Professor's Student List
+
 function renderProfessorStudentList(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -157,21 +155,20 @@ function renderProfessorStudentList(containerId) {
 }
 function handleScan(input) {
     if (input.files && input.files[0]) {
-        // 1. Hide the upload text
+
         document.getElementById('uploadText').innerText = "Image Uploaded: " + input.files[0].name;
         
-        // 2. Show Processing Spinner
+
         document.getElementById('processing').style.display = 'block';
         document.getElementById('scanResult').style.display = 'none';
 
-        // 3. Simulate API Delay (2 seconds)
         setTimeout(() => {
             document.getElementById('processing').style.display = 'none';
             document.getElementById('scanResult').style.display = 'block';
         }, 2000);
     }
 }
-/* --- AUTHENTICATION LOGIC --- */
+
 
 function handleRegister() {
     const name = document.getElementById('regName').value;
@@ -184,16 +181,16 @@ function handleRegister() {
         return;
     }
 
-    // Get existing users or initialize empty array
+  
     const users = JSON.parse(localStorage.getItem('users')) || [];
 
-    // Check if email already exists
+    
     if (users.find(u => u.email === email)) {
         alert("User already exists!");
         return;
     }
 
-    // Save new user
+   
     users.push({ name, email, pass, role });
     localStorage.setItem('users', JSON.stringify(users));
 
@@ -214,10 +211,10 @@ function handleLogin() {
     const user = users.find(u => u.email === email && u.pass === pass);
 
     if (user) {
-        // Save current user session
+        
         localStorage.setItem('currentUser', JSON.stringify(user));
 
-        // Redirect based on role
+       
         if (user.role === 'student') {
             window.location.href = 'student_dashboard.html';
         } else {
@@ -228,18 +225,17 @@ function handleLogin() {
     }
 }
 
-// Optional: Logout function to be used in nav bars
+
 function logout() {
     localStorage.removeItem('currentUser');
     window.location.href = 'index.html';
 }
-// NEW: Render Student's Own Stats
 function renderStudentStats(containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
     container.innerHTML = mockMyGrades.map(g => {
-        // Calculate percentage for color
+       
         const pct = (g.score / g.total) * 100;
         let colorClass = 'grade-high';
         if (pct < 50) colorClass = 'grade-low';
