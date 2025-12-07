@@ -486,12 +486,17 @@ function showQuizStudents(quizId) {
     let totalStudents = students.length;
     let avgScore = 0;
     let highestScore = 0;
-    let lowestScore = Infinity;
+    let lowestScore = 0;
     
     if (students.length > 0) {
         const totalPoints = students.reduce((sum, s) => sum + s.score, 0);
         const totalPossible = students.reduce((sum, s) => sum + s.total, 0);
         avgScore = totalPossible > 0 ? (totalPoints / totalPossible) * 100 : 0;
+        
+        // Initialize with first student's score
+        const firstPercentage = students[0].total > 0 ? (students[0].score / students[0].total) * 100 : 0;
+        highestScore = firstPercentage;
+        lowestScore = firstPercentage;
         
         students.forEach(s => {
             const percentage = s.total > 0 ? (s.score / s.total) * 100 : 0;
@@ -525,7 +530,11 @@ function showQuizStudents(quizId) {
                     <div class="text-small">Lowest</div>
                 </div>
             </div>
-        ` : ''}
+        ` : `
+            <div style="padding: 15px; background: #f9f9f9; border-radius: 5px; margin-bottom: 20px; text-align: center;">
+                <p style="color: #888; margin: 0;">No statistics available - no students have taken this test yet.</p>
+            </div>
+        `}
         
         <div id="quiz-students-list">
             ${students.length === 0 
