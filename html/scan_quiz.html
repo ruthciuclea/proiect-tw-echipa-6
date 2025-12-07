@@ -61,8 +61,19 @@
             <div class="mobile-header">Scan Papers</div>
             
             <div class="card">
-                <h3>Scan Papers for: <span style="color:#4ecdc4">Test 1 - ASD</span></h3>
-                <p style="color:#666; font-size:14px; margin-bottom:20px;">Upload an image or use your camera to grade a student's paper.</p>
+                <h3>Scan Quiz Papers</h3>
+                
+                <label>Select Quiz</label>
+                <select id="quizSelect" style="width: 100%; padding: 10px; margin-bottom: 20px;" onchange="loadQuizInfo()">
+                    <option value="">-- Select a Quiz --</option>
+                </select>
+                
+                <div id="quizInfo" style="display: none; padding: 10px; background: #f9f9f9; border-radius: 5px; margin-bottom: 20px;">
+                    <p><strong>Quiz:</strong> <span id="selectedQuizName"></span></p>
+                    <p><strong>Questions:</strong> <span id="selectedQuizCount"></span></p>
+                </div>
+                
+                <p style="color:#666; font-size:14px; margin-bottom:20px;">Upload an image of the answer sheet. The system will detect filled bubbles/rectangles.</p>
 
                 <div class="scan-area" onclick="document.getElementById('cameraInput').click()">
                     <span class="nav-icon scan-icon">📷</span>
@@ -71,20 +82,115 @@
                 
                 <input type="file" id="cameraInput" class="hidden-input" accept="image/*" capture="environment" onchange="handleScan(this)">
 
+                <div id="imagePreview" style="display: none; margin: 20px 0;">
+                    <img id="previewImg" style="max-width: 100%; border-radius: 5px; border: 2px solid #4ecdc4;">
+                </div>
+
                 <div id="processing" style="text-align:center; display:none;">
                     <div class="spinner" style="display:block;"></div>
-                    <p>Processing Answers (OCR)...</p>
+                    <p>Processing Answers (OMR Detection)...</p>
                 </div>
 
                 <div id="scanResult" class="result-box">
-                    <h4>✅ Scan Successful!</h4>
-                    <p><strong>Student:</strong> Ion Radu (ID: 67897)</p>
-                    <p><strong>Score:</strong> <span style="color:#4ecdc4; font-weight:bold; font-size:18px;">9.50 / 10</span></p>
-                    <button class="primary-btn" style="padding:10px; margin-top:10px;">Save & Scan Next</button>
+                    <h4>✅ Scan Results</h4>
+                    <div id="resultContent"></div>
+                    <input type="text" id="studentNameInput" placeholder="Enter student name (optional)" style="width: 100%; padding: 8px; margin: 10px 0;">
+                    <input type="text" id="studentIdInput" placeholder="Enter student ID (optional)" style="width: 100%; padding: 8px; margin-bottom: 10px;">
+                    <button class="primary-btn" style="padding:10px; margin-top:10px; width: 100%;" onclick="saveScanResult()">Save Result</button>
+                    <button class="secondary-btn" style="padding:10px; margin-top:10px; width: 100%;" onclick="resetScan()">Scan Another</button>
                 </div>
             </div>
         </main>
     </div>
     <script src="../js/script.js"></script>
+    <script>
+        let selectedQuiz = null;
+        let scanResults = null;
+        
+        // Load quizzes on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            loadQuizzes();
+        });
+        
+        function loadQuizzes() {
+            const quizzes = getQuizzes() || [];
+            const select = document.getElementById('quizSelect');
+            select.innerHTML = '<option value="">-- Select a Quiz --</option>';
+            
+            quizzes.forEach(quiz => {
+                const option = document.createElement('option');
+                option.value = quiz.id;
+                option.textContent = quiz.name;
+                select.appendChild(option);
+            });
+        }
+        
+        function loadQuizInfo() {
+            const quizId = document.getElementById('quizSelect').value;
+            if (!quizId) {
+                document.getElementById('quizInfo').style.display = 'none';
+                selectedQuiz = null;
+                return;
+            }
+            
+            const quizzes = getQuizzes() || [];
+            selectedQuiz = quizzes.find(q => q.id.toString() === quizId);
+            
+            if (selectedQuiz) {
+                document.getElementById('selectedQuizName').textContent = selectedQuiz.name;
+                document.getElementById('selectedQuizCount').textContent = selectedQuiz.questionCount || 'N/A';
+                document.getElementById('quizInfo').style.display = 'block';
+            }
+        }
+        
+        function resetScan() {
+            document.getElementById('cameraInput').value = '';
+            document.getElementById('uploadText').textContent = 'Tap to Scan / Upload Paper';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('scanResult').style.display = 'none';
+            document.getElementById('processing').style.display = 'none';
+            document.getElementById('studentNameInput').value = '';
+            document.getElementById('studentIdInput').value = '';
+            scanResults = null;
+        }
+        
+        function saveScanResult() {
+            if (!scanResults || !selectedQuiz) {
+                alert('Please scan a paper first');
+                return;
+            }
+            
+            const studentName = document.getElementById('studentNameInput').value.trim();
+            const studentId = document.getElementById('studentIdInput').value.trim();
+            const studentEmail = studentId ? `${studentId}@student.local` : null; // Generate email from ID if provided
+            
+            // Extract subject from quiz name
+            const subject = extractSubjectFromQuizName(selectedQuiz.name);
+            
+            // Save the test result with student info
+            addStudentTestResult(
+                selectedQuiz.id,
+                selectedQuiz.name,
+                subject,
+                scanResults.score,
+                scanResults.total,
+                new Date().toISOString().split('T')[0],
+                studentName || null,
+                studentEmail || null,
+                studentId || null
+            );
+            
+            // Update quiz papers count
+            const quizzes = getQuizzes();
+            const quizIndex = quizzes.findIndex(q => q.id === selectedQuiz.id);
+            if (quizIndex >= 0) {
+                quizzes[quizIndex].papers = (quizzes[quizIndex].papers || 0) + 1;
+                localStorage.setItem('quizzes', JSON.stringify(quizzes));
+            }
+            
+            alert(`Result saved! Points: ${scanResults.score.toFixed(1)}/${scanResults.total.toFixed(1)} (${scanResults.percentage}%)`);
+            resetScan();
+        }
+    </script>
 </body>
 </html>

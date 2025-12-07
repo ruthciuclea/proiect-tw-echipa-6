@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate Test Answer Sheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #4ecdc4;
+        }
+        .answer-sheet {
+            border: 2px solid #333;
+            padding: 20px;
+            margin: 20px 0;
+            background: white;
+        }
+        .question-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .question-number {
+            font-weight: bold;
+            width: 40px;
+        }
+        .bubble {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #333;
+            border-radius: 50%;
+            margin: 0 10px;
+            display: inline-block;
+            cursor: pointer;
+            background: white;
+        }
+        .bubble.filled {
+            background: #000;
+        }
+        .bubble-label {
+            width: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+        button {
+            background: #4ecdc4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2a8b85;
+        }
+        #canvas {
+            border: 2px solid #333;
+            margin: 20px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 Test Answer Sheet Generator</h1>
+        <p>Click bubbles to fill them, then download as image to test the OMR scanner.</p>
+        
+        <div class="answer-sheet" id="answerSheet">
+            <h3>Answer Sheet (5 Questions, 4 Options)</h3>
+            <div id="questions"></div>
+        </div>
+        
+        <button onclick="generateImage()">📥 Download as Image</button>
+        <button onclick="fillRandom()">🎲 Fill Random Answers</button>
+        <button onclick="clearAll()">🗑️ Clear All</button>
+        
+        <canvas id="canvas"></canvas>
+    </div>
+
+    <script>
+        const questions = 5;
+        const options = 4;
+        const letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+        let selectedAnswers = {};
+
+        function init() {
+            const container = document.getElementById('questions');
+            for (let q = 1; q <= questions; q++) {
+                const row = document.createElement('div');
+                row.className = 'question-row';
+                
+                const qNum = document.createElement('div');
+                qNum.className = 'question-number';
+                qNum.textContent = q + '.';
+                row.appendChild(qNum);
+                
+                for (let opt = 0; opt < options; opt++) {
+                    const label = document.createElement('div');
+                    label.className = 'bubble-label';
+                    label.textContent = letters[opt];
+                    row.appendChild(label);
+                    
+                    const bubble = document.createElement('div');
+                    bubble.className = 'bubble';
+                    bubble.dataset.question = q;
+                    bubble.dataset.option = letters[opt];
+                    bubble.onclick = () => toggleBubble(bubble);
+                    row.appendChild(bubble);
+                }
+                
+                container.appendChild(row);
+            }
+        }
+
+        function toggleBubble(bubble) {
+            const q = bubble.dataset.question;
+            const opt = bubble.dataset.option;
+            
+            if (bubble.classList.contains('filled')) {
+                bubble.classList.remove('filled');
+                if (selectedAnswers[q]) {
+                    selectedAnswers[q] = selectedAnswers[q].filter(a => a !== opt);
+                }
+            } else {
+                bubble.classList.add('filled');
+                if (!selectedAnswers[q]) {
+                    selectedAnswers[q] = [];
+                }
+                selectedAnswers[q].push(opt);
+            }
+        }
+
+        function fillRandom() {
+            clearAll();
+            for (let q = 1; q <= questions; q++) {
+                const randomOpt = Math.floor(Math.random() * options);
+                const bubble = document.querySelector(`[data-question="${q}"][data-option="${letters[randomOpt]}"]`);
+                if (bubble) toggleBubble(bubble);
+            }
+        }
+
+        function clearAll() {
+            document.querySelectorAll('.bubble.filled').forEach(b => {
+                b.classList.remove('filled');
+            });
+            selectedAnswers = {};
+        }
+
+        function generateImage() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const sheet = document.getElementById('answerSheet');
+            
+            // Set canvas size
+            canvas.width = sheet.offsetWidth;
+            canvas.height = sheet.offsetHeight;
+            
+            // Draw white background
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw title
+            ctx.fillStyle = 'black';
+            ctx.font = 'bold 20px Arial';
+            ctx.fillText('Answer Sheet', 20, 30);
+            
+            // Draw questions and bubbles
+            // Use consistent spacing that matches detection algorithm expectations
+            const marginTop = 40;
+            const marginLeft = 40;
+            const rowHeight = Math.max(40, (canvas.height - marginTop * 2) / questions);
+            const bubbleSize = Math.min(20, rowHeight * 0.4);
+            const bubbleSpacing = Math.max(50, (canvas.width - marginLeft * 2) / options);
+            const startY = marginTop + rowHeight / 2;
+            const startX = marginLeft + bubbleSpacing / 2;
+            
+            for (let q = 1; q <= questions; q++) {
+                const y = startY + (q - 1) * rowHeight;
+                
+                // Question number
+                ctx.font = 'bold 16px Arial';
+                ctx.fillText(q + '.', 10, y);
+                
+                // Draw bubbles
+                for (let opt = 0; opt < options; opt++) {
+                    const x = startX + opt * bubbleSpacing;
+                    
+                    // Label
+                    ctx.font = '14px Arial';
+                    ctx.fillText(letters[opt], x - 15, y - bubbleSize / 2 - 5);
+                    
+                    // Bubble circle
+                    ctx.strokeStyle = 'black';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(x, y, bubbleSize / 2, 0, 2 * Math.PI);
+                    ctx.stroke();
+                    
+                    // Fill if selected
+                    const isFilled = selectedAnswers[q] && selectedAnswers[q].includes(letters[opt]);
+                    if (isFilled) {
+                        ctx.fillStyle = 'black';
+                        ctx.beginPath();
+                        ctx.arc(x, y, bubbleSize / 2 - 2, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.fillStyle = 'black';
+                    }
+                }
+            }
+            
+            // Download
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'test_answer_sheet.png';
+                a.click();
+                URL.revokeObjectURL(url);
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
