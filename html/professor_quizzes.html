@@ -46,14 +46,19 @@
             const container = document.getElementById('quiz-list-container');
             const quizzes = getQuizzes();
             container.innerHTML = quizzes.map(q => `
-                <div class="list-item" style="flex-wrap: wrap;">
+                <div class="list-item" style="flex-wrap: wrap; gap: 10px;">
                     <div style="flex: 1;">
                         <strong>${q.name}</strong>
                         <div class="text-small">Papers: ${q.papers} | ${q.date}</div>
                     </div>
-                    <button class="secondary-btn" style="padding: 5px 10px; font-size: 12px;" onclick="window.location.href='scan_quiz.html'">
-                        📷 Scan
-                    </button>
+                    <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        <button class="secondary-btn" style="padding: 5px 10px; font-size: 12px;" onclick="showQuizStudents(${q.id})">
+                            👥 View Students
+                        </button>
+                        <button class="secondary-btn" style="padding: 5px 10px; font-size: 12px;" onclick="window.location.href='scan_quiz.html'">
+                            📷 Scan
+                        </button>
+                    </div>
                 </div>
             `).join('');
         }
