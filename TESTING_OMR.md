@@ -5,8 +5,8 @@
 ### 1. Create a Quiz with Answer Key
 
 1. **Login as Professor**
-   - Go to `http://localhost:3000/html/login.html` (or open directly)
-   - Login with a professor account (or register one)
+   - Open `html/login.html` directly in your browser or access it through a local server (if using one)
+   - Login with a professor account (or register a new one)
 
 2. **Create a New Quiz**
    - Navigate to "Quizzes" page
@@ -43,7 +43,7 @@ You have a few options:
 
 1. **Go to Scan Page**
    - From the Quizzes page, click "📷 Scan" button on a quiz
-   - Or navigate to `scan_quiz.html`
+   - Or navigate directly to `html/scan_quiz.html`
 
 2. **Select the Quiz**
    - In the dropdown, select the quiz you just created
